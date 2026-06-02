@@ -34,7 +34,7 @@
     productSupport: 'https://threelevers.com/support/contact-support/',
     contact: 'https://threelevers.com/contact/',
     website: 'https://threelevers.com',
-    repository: 'https://github.com/threelevers/lightning-flow-iframe',
+    repository: 'https://github.com/jason-best/lightning-flow-iframe',
     relatedDocs: {
       querystringVariables:
         'https://threelevers.com/support/products/lightning-flow-iframe/querystring-variables/',

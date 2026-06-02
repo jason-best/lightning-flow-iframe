@@ -8,13 +8,13 @@ Run from the repository root (`lightning-flow-iframe`).
 git init
 git add -A
 git commit --trailer "Co-authored-by: Cursor <cursoragent@cursor.com>" -m "Initial public release: FlowIframeEmbed source and embed widget v1.0.0"
-gh repo create threelevers/lightning-flow-iframe --public --source=. --remote=origin --push
+gh repo create jason-best/lightning-flow-iframe --public --source=. --remote=origin --push
 ```
 
 If the remote already exists:
 
 ```bash
-git remote add origin https://github.com/threelevers/lightning-flow-iframe.git
+git remote add origin https://github.com/jason-best/lightning-flow-iframe.git
 git branch -M main
 git push -u origin main
 ```
@@ -38,9 +38,9 @@ gh release create v1.0.0 embed/three-levers-flow-embed.js \
 ## CDN (optional)
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/threelevers/lightning-flow-iframe@v1.0.0/embed/three-levers-flow-embed.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/jason-best/lightning-flow-iframe@v1.0.0/embed/three-levers-flow-embed.js"></script>
 ```
 
 Release download URL:
 
-`https://github.com/threelevers/lightning-flow-iframe/releases/download/v1.0.0/three-levers-flow-embed.js`
+`https://github.com/jason-best/lightning-flow-iframe/releases/download/v1.0.0/three-levers-flow-embed.js`

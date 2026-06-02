@@ -20,15 +20,15 @@
     allowedOrigin: 'https://your-site.force.com'
   };
 </script>
-<script src="https://cdn.jsdelivr.net/gh/threelevers/lightning-flow-iframe@1.0.0/embed/three-levers-flow-embed.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/jason-best/lightning-flow-iframe@1.0.0/embed/three-levers-flow-embed.js"></script>
 ```
 
 Define `window.tlFlowEmbed` **before** the widget script.
 
 ### CDN
 
-- **jsDelivr (pinned tag):** `https://cdn.jsdelivr.net/gh/threelevers/lightning-flow-iframe@1.0.0/embed/three-levers-flow-embed.js`
-- **jsDelivr (latest release):** `https://cdn.jsdelivr.net/gh/threelevers/lightning-flow-iframe@latest/embed/three-levers-flow-embed.js`
+- **jsDelivr (pinned tag):** `https://cdn.jsdelivr.net/gh/jason-best/lightning-flow-iframe@1.0.0/embed/three-levers-flow-embed.js`
+- **jsDelivr (latest release):** `https://cdn.jsdelivr.net/gh/jason-best/lightning-flow-iframe@latest/embed/three-levers-flow-embed.js`
 
 ### Self-host
 
