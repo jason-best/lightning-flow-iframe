@@ -1,0 +1,11 @@
+{
+  "orgName": "Lightning Flow iFrame Scratch",
+  "edition": "Developer",
+  "namespace": "three_levers",
+  "features": ["EnableSetPasswordInApi"],
+  "settings": {
+    "lightningExperienceSettings": {
+      "enableS1DesktopEnabled": true
+    }
+  }
+}

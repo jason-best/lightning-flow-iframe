@@ -1,0 +1,15 @@
+{
+  "packageDirectories": [
+    {
+      "path": "force-app/main/default",
+      "default": true,
+      "package": "FlowIframeEmbed",
+      "versionNumber": "1.0.0.NEXT",
+      "versionName": "ver 1.0"
+    }
+  ],
+  "name": "lightning-flow-iframe",
+  "namespace": "three_levers",
+  "sfdcLoginUrl": "https://login.salesforce.com",
+  "sourceApiVersion": "65.0"
+}

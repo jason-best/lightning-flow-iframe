@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Flow embed demo (local)</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 720px; margin: 2rem auto; padding: 0 1rem; }
+    code { background: #f4f4f4; padding: 0.15rem 0.35rem; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h1>Lightning Flow iFrame — local demo</h1>
+  <p>Edit <code>window.tlFlowEmbed</code> below with your Site URL and flow API name, then open this file via a local web server (file:// may block iframe messaging).</p>
+  <div id="tl-flow-embed"></div>
+  <script>
+    window.tlFlowEmbed = {
+      embedUrl: 'https://YOUR-SITE.force.com/PREFIX/FlowIframeEmbed',
+      flow: 'YOUR_FLOW_API_NAME',
+      endUrl: '',
+      height: '100px',
+      heightPadding: 20,
+      ease: true
+    };
+  </script>
+  <script src="../embed/three-levers-flow-embed.js"></script>
+</body>
+</html>

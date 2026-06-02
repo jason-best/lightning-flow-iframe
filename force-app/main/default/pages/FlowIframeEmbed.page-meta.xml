@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApexPage xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>65.0</apiVersion>
+    <availableInTouch>true</availableInTouch>
+    <confirmationTokenRequired>false</confirmationTokenRequired>
+    <description>Renders a Lightning flow in Lightning Runtime for embedding in an iframe. Supports dynamic height (postMessage), query-string flow inputs, and redirect on finish (endUrl). Use on a public Site or Experience for external embedding.</description>
+    <label>Flow Iframe Embed</label>
+</ApexPage>

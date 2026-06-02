@@ -1,0 +1,326 @@
+<apex:page id="FlowIframeEmbed"
+    showHeader="false"
+    docType="html-5.0"
+    lightningStyleSheets="true"
+    sidebar="false"
+    standardStylesheets="false"
+    applyBodyTag="false"
+    applyHtmlTag="false">
+    <apex:includeLightning />
+    <html xmlns="http://www.w3.org/1999/xhtml">
+        <head>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+            <script type="text/javascript" src="{!URLFOR($Resource.IframeResizerContentWindow)}" id="iframe-resizer"></script>
+            <style>
+/*
+  FlowIframeEmbed — optional SLDS overrides for Screen Flows in Lightning Runtime.
+  Subscribers: edit CSS variables in :root to match your brand. Sections below map to Flow UI.
+  Some controls use shadow DOM; these rules still affect most visible chrome via .slds-scope.
+*/
+
+/* --- :root — design tokens (page shell + Flow chrome) --- */
+:root {
+  /* Page background behind the flow */
+  --fie-color-bg-page: #f3f3f3;
+  /* Primary text */
+  --fie-color-text: #181818;
+  /* Secondary / help text */
+  --fie-color-text-muted: #706e6b;
+  /* Primary actions (Next, Finish, brand buttons) */
+  --fie-color-accent: #0176d3;
+  --fie-color-accent-hover: #014486;
+  /* Required asterisk, inline links in help text */
+  --fie-color-link: #0176d3;
+  /* Validation errors on fields */
+  --fie-color-error: #c23934;
+  /* Field borders, card edges */
+  --fie-color-border: #c9c9c9;
+  /* Subtle shadow on cards */
+  --fie-shadow-card: 0 2px 4px rgba(0, 0, 0, 0.07);
+  /* Corner radius for inputs, buttons, cards */
+  --fie-radius: 0.25rem;
+  /* Body copy — system stack only (no external fonts) */
+  --fie-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --fie-font-size-base: 1rem;
+  --fie-line-height: 1.5;
+  --fie-line-height-heading: 1.25;
+  /* Input padding and minimum tap height */
+  --fie-input-padding-y: 0.5rem;
+  --fie-input-padding-x: 0.75rem;
+  --fie-input-min-height: 2.5rem;
+}
+
+/* --- html/body — iframe page shell (not Flow-specific) --- */
+html {
+  box-sizing: border-box;
+  font-size: 100%;
+}
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--fie-color-bg-page);
+  color: var(--fie-color-text);
+  font-family: var(--fie-font-family);
+  font-size: var(--fie-font-size-base);
+  line-height: var(--fie-line-height);
+  -webkit-font-smoothing: antialiased;
+}
+body {
+  padding: 1rem 1rem 1.5rem;
+}
+
+/* --- #flowLoading — shown until Lightning Out loads the flow --- */
+.flow-loading {
+  font-family: var(--fie-font-family);
+  font-size: var(--fie-font-size-base);
+  color: var(--fie-color-text-muted);
+}
+
+/* --- .slds-scope — base typography inside Flow runtime --- */
+.slds-scope {
+  font-family: var(--fie-font-family);
+  font-size: var(--fie-font-size-base);
+  line-height: var(--fie-line-height);
+  color: var(--fie-color-text);
+}
+
+/* --- Flow screen titles (large headings on each step) --- */
+.slds-scope .slds-text-heading_large,
+.slds-scope .slds-text-heading--large {
+  font-weight: 700;
+  font-size: 1.25rem;
+  line-height: var(--fie-line-height-heading);
+  color: var(--fie-color-text);
+}
+
+/* --- Section / field group headings within a screen --- */
+.slds-scope .slds-text-heading_medium,
+.slds-scope .slds-text-heading--medium {
+  font-weight: 600;
+  font-size: 1.125rem;
+  line-height: var(--fie-line-height-heading);
+  color: var(--fie-color-text);
+}
+
+/* --- Body and help text blocks --- */
+.slds-scope .slds-text-body_regular,
+.slds-scope .slds-text-body--regular,
+.slds-scope .slds-text-body_small,
+.slds-scope .slds-text-body--small {
+  color: var(--fie-color-text-muted);
+}
+
+/* --- Field labels and radio/checkbox group legends --- */
+.slds-scope .slds-form-element__label,
+.slds-scope .slds-form-element__legend {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--fie-color-text);
+  line-height: var(--fie-line-height);
+}
+.slds-scope .slds-form-element__label .slds-required {
+  color: var(--fie-color-error);
+}
+
+/* --- Inline help under fields --- */
+.slds-scope .slds-form-element__help {
+  font-size: 0.8125rem;
+  color: var(--fie-color-text-muted);
+}
+.slds-scope .slds-form-element__help a {
+  color: var(--fie-color-link);
+}
+
+/* --- Text inputs, textareas, picklists --- */
+.slds-scope .slds-input,
+.slds-scope .slds-textarea,
+.slds-scope .slds-select_container .slds-select {
+  font-family: var(--fie-font-family);
+  font-size: var(--fie-font-size-base);
+  color: var(--fie-color-text);
+  background-color: #fff;
+  border: 1px solid var(--fie-color-border);
+  border-radius: var(--fie-radius);
+  padding: var(--fie-input-padding-y) var(--fie-input-padding-x);
+  min-height: var(--fie-input-min-height);
+}
+.slds-scope .slds-textarea {
+  min-height: 5rem;
+  resize: vertical;
+}
+.slds-scope .slds-input::placeholder,
+.slds-scope .slds-textarea::placeholder {
+  color: var(--fie-color-text-muted);
+}
+.slds-scope .slds-input:focus,
+.slds-scope .slds-textarea:focus,
+.slds-scope .slds-select_container .slds-select:focus {
+  border-color: var(--fie-color-accent);
+  box-shadow: 0 0 0 1px var(--fie-color-accent);
+  outline: none;
+}
+
+/* --- Fields in validation error state --- */
+.slds-scope .slds-form-element.slds-has-error .slds-input,
+.slds-scope .slds-form-element.slds-has-error .slds-textarea,
+.slds-scope .slds-form-element.slds-has-error .slds-select {
+  border-color: var(--fie-color-error);
+}
+
+/* --- Lookup / combobox search inputs --- */
+.slds-scope .slds-combobox__input {
+  border-radius: var(--fie-radius);
+  border-color: var(--fie-color-border);
+  min-height: var(--fie-input-min-height);
+}
+.slds-scope .slds-combobox__input:focus {
+  border-color: var(--fie-color-accent);
+  box-shadow: 0 0 0 1px var(--fie-color-accent);
+}
+
+/* --- Radio and checkbox option labels --- */
+.slds-scope .slds-radio .slds-form-element__label,
+.slds-scope .slds-checkbox .slds-form-element__label {
+  font-weight: 400;
+  color: var(--fie-color-text-muted);
+}
+
+/* --- Primary navigation buttons (Next, Finish, Submit) --- */
+.slds-scope .slds-button_brand,
+.slds-scope .slds-button--brand {
+  font-weight: 600;
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+  min-height: var(--fie-input-min-height);
+  border-radius: var(--fie-radius);
+  background-color: var(--fie-color-accent);
+  border: 1px solid var(--fie-color-accent);
+  color: #fff;
+}
+.slds-scope .slds-button_brand:hover,
+.slds-scope .slds-button_brand:focus,
+.slds-scope .slds-button--brand:hover,
+.slds-scope .slds-button--brand:focus {
+  background-color: var(--fie-color-accent-hover);
+  border-color: var(--fie-color-accent-hover);
+}
+
+/* --- Secondary buttons (Previous, Pause where shown) --- */
+.slds-scope .slds-button_neutral,
+.slds-scope .slds-button--neutral {
+  font-size: 0.875rem;
+  padding: 0.5rem 1rem;
+  min-height: var(--fie-input-min-height);
+  border-radius: var(--fie-radius);
+  border: 1px solid var(--fie-color-border);
+  color: var(--fie-color-text);
+  background: #fff;
+}
+
+/* --- Text links inside flow content (not buttons) --- */
+.slds-scope a:not([class*="slds-button"]) {
+  color: var(--fie-color-link);
+}
+
+/* --- Display Text / Section cards if the flow uses card layout --- */
+.slds-scope .slds-card {
+  border: 1px solid var(--fie-color-border);
+  border-radius: var(--fie-radius);
+  box-shadow: var(--fie-shadow-card);
+  background: #fff;
+}
+.slds-scope .slds-card__header,
+.slds-scope .slds-card__footer {
+  border-color: var(--fie-color-border);
+}
+
+/* --- Progress path / step indicator (multi-step flows) --- */
+.slds-scope .slds-progress__item.slds-is-active .slds-progress__marker {
+  background: var(--fie-color-accent);
+  border-color: var(--fie-color-accent);
+}
+            </style>
+        </head>
+        <apex:slds />
+        <body class="slds-scope">
+            <div id="flowLoading" class="flow-loading">Loading</div>
+            <div id="flowContainer" style="display: none;"></div>
+            <script>
+                (function() {
+                    var RESERVED_PARAMS = ['flow', 'endUrl', 'inputVars'];
+                    /* Packaged FlowOut (namespace from FlowIframeEmbed 2GP build). Unpackaged-only dev: use c:FlowOut */
+                    var flowOutApp = 'three_levers:FlowOut';
+
+                    function getUrlParams() {
+                        var params = new URLSearchParams(window.location.search);
+                        var flowName = params.get('flow') || '';
+                        var endUrl = params.get('endUrl') || '';
+                        var inputVarsParam = (params.get('inputVars') || '').trim();
+                        var allowedKeys = inputVarsParam.length > 0
+                            ? inputVarsParam.split(',').map(function(k) { return k.trim(); }).filter(Boolean)
+                            : [];
+                        var inputVariables = [];
+                        params.forEach(function(value, key) {
+                            if (RESERVED_PARAMS.indexOf(key) === -1 && allowedKeys.indexOf(key) !== -1) {
+                                inputVariables.push({ name: key, type: 'String', value: value });
+                            }
+                        });
+                        return { flowName: flowName, endUrl: endUrl, inputVariables: inputVariables };
+                    }
+
+                    function sendHeightToParent() {
+                        var height = document.body.scrollHeight;
+                        if (window.parent && window.parent !== window) {
+                            window.parent.postMessage({ frameHeight: height }, '*');
+                        }
+                    }
+
+                    var urlParams = getUrlParams();
+                    var flowName = urlParams.flowName;
+                    var endUrl = urlParams.endUrl;
+                    var inputVariables = urlParams.inputVariables;
+
+                    if (!flowName) {
+                        document.getElementById('flowLoading').textContent = 'Missing required parameter: flow (Flow API name)';
+                        document.getElementById('flowLoading').style.color = 'var(--fie-color-error)';
+                        sendHeightToParent();
+                        return;
+                    }
+
+                    var heightInterval;
+                    var statusChange = function(event) {
+                        if (event.getParam('status') === 'FINISHED') {
+                            if (heightInterval) {
+                                clearInterval(heightInterval);
+                            }
+                            if (endUrl && endUrl.length > 1) {
+                                window.parent.location.href = endUrl;
+                            }
+                        }
+                    };
+                    $Lightning.use(flowOutApp, function() {
+                        $Lightning.createComponent(
+                            'lightning:flow',
+                            { onstatuschange: statusChange },
+                            'flowContainer',
+                            function(component) {
+                                document.getElementById('flowLoading').style.display = 'none';
+                                document.getElementById('flowContainer').style.display = 'block';
+                                component.startFlow(flowName, inputVariables);
+                                heightInterval = setInterval(function() {
+                                    sendHeightToParent();
+                                }, 500);
+                            }
+                        );
+                    });
+                })();
+            </script>
+        </body>
+    </html>
+</apex:page>
