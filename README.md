@@ -94,7 +94,7 @@ sf package install --package 04tgL000000GPwvQAG --target-org <alias>
     allowedOrigin: 'https://your-site.force.com'
   };
 </script>
-<script src="https://cdn.jsdelivr.net/gh/threelevers/lightning-flow-iframe@1.0.0/embed/three-levers-flow-embed.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/jason-best/lightning-flow-iframe@1.0.0/embed/three-levers-flow-embed.js"></script>
 ```
 
 More examples: [docs/EMBED.md](docs/EMBED.md) · Local demo: [examples/embed-demo.html](examples/embed-demo.html)
@@ -103,8 +103,8 @@ More examples: [docs/EMBED.md](docs/EMBED.md) · Local demo: [examples/embed-dem
 
 | URL | Use |
 |-----|-----|
-| `https://cdn.jsdelivr.net/gh/threelevers/lightning-flow-iframe@1.0.0/embed/three-levers-flow-embed.js` | Pinned release |
-| `https://cdn.jsdelivr.net/gh/threelevers/lightning-flow-iframe@latest/embed/three-levers-flow-embed.js` | Latest GitHub release |
+| `https://cdn.jsdelivr.net/gh/jason-best/lightning-flow-iframe@1.0.0/embed/three-levers-flow-embed.js` | Pinned release |
+| `https://cdn.jsdelivr.net/gh/jason-best/lightning-flow-iframe@latest/embed/three-levers-flow-embed.js` | Latest GitHub release |
 
 ---
 
@@ -184,7 +184,7 @@ examples/embed-demo.html            Local test page
 ## Development
 
 ```bash
-git clone https://github.com/threelevers/lightning-flow-iframe.git
+git clone https://github.com/jason-best/lightning-flow-iframe.git
 cd lightning-flow-iframe
 sf org create scratch --definition-file config/project-scratch-def.json --alias flow-embed-scratch --duration-days 7
 sf project deploy start --manifest manifest/package.xml --target-org flow-embed-scratch
