@@ -99,6 +99,14 @@ sf package install --package 04tgL000000GPwvQAG --target-org <alias>
 
 More examples: [docs/EMBED.md](docs/EMBED.md) · Local demo: [examples/embed-demo.html](examples/embed-demo.html)
 
+## WordPress
+
+The legacy **Lightning Flow iFrame** plugin (shortcode `[Lightning-Flow-iFrame]`) lives in [`wordpress/lightning-flow-iframe/`](wordpress/lightning-flow-iframe/). Install by zipping that folder and uploading it under **Plugins → Add New → Upload Plugin**.
+
+Full instructions: [docs/WORDPRESS.md](docs/WORDPRESS.md) (settings page, bare `[Lightning-Flow-iFrame]` shortcode, embed vs legacy modes).
+
+New WordPress sites should prefer embed mode via plugin defaults or explicit `flow` on the shortcode.
+
 ### CDN (jsDelivr)
 
 | URL | Use |
@@ -174,8 +182,9 @@ Older integrations used `ifc.iframeurl`, `ifc.endurl`, and auto-appended the par
 ```text
 embed/three-levers-flow-embed.js    Parent-page widget
 force-app/main/default/             FlowIframeEmbed, FlowOut, static resources
+wordpress/lightning-flow-iframe/    Legacy WordPress plugin (shortcode)
 manifest/package.xml                Unpackaged deploy manifest
-docs/                               INSTALL, EMBED, PACKAGING
+docs/                               INSTALL, EMBED, PACKAGING, WORDPRESS
 examples/embed-demo.html            Local test page
 ```
 
@@ -201,6 +210,7 @@ Maintainers: see [SYNC.md](SYNC.md) for syncing from the private ThreeLeversDevO
 - [Querystring variables](https://threelevers.com/support/products/lightning-flow-iframe/querystring-variables/)
 - [Finish URL](https://threelevers.com/support/products/lightning-flow-iframe/finish-url/)
 - [Salesforce setup](https://threelevers.com/support/products/lightning-flow-iframe/salesforce-setup/)
+- [WordPress plugin](docs/WORDPRESS.md) (in-repo)
 - [Contact](https://threelevers.com/contact/)
 
 ---

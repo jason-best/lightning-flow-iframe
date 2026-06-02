@@ -33,7 +33,7 @@ gh release create v1.0.0 embed/three-levers-flow-embed.js \
 
 1. Sync from ThreeLeversDevOrg per `SYNC.md`.
 2. Bump `INFO.version` in `embed/three-levers-flow-embed.js` when the widget changes.
-3. Commit, tag `vX.Y.Z`, push tag, `gh release create` with the embed file attached.
+3. Commit, tag `vX.Y.Z`, push tag, `gh release create` with the embed file attached (optionally attach a zip of `wordpress/lightning-flow-iframe/` for WordPress uploads).
 
 ## CDN (optional)
 

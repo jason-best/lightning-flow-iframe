@@ -6,6 +6,7 @@ The canonical development monorepo is private. When shipping a release, sync int
 |-----------------------------|-------------------|
 | `force-app/flow-iframe-embed/` | `force-app/main/default/` |
 | `embed/three-levers-flow-embed.js` | `embed/three-levers-flow-embed.js` |
+| `wordpress/lightning-flow-iframe/` (if present) | `wordpress/lightning-flow-iframe/` |
 
 After sync:
 
