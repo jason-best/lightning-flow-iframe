@@ -9,7 +9,6 @@ logs
 node_modules/
 SYNC.md
 PUBLISH.md
-.gitignore
 .pmdCache
 .eslintcache
 .DS_Store
