@@ -62,15 +62,15 @@ sequenceDiagram
 
 ## Install package
 
-**Version `1.0.0-1`** · Subscriber version Id `04tgL000000GPwvQAG`
+**Version `1.1.0-2` (released)** · Subscriber version Id `04tgL000000GUerQAG`
 
 | Org | URL |
 |-----|-----|
-| Production | https://login.salesforce.com/packaging/installPackage.apexp?p0=04tgL000000GPwvQAG |
-| Sandbox | https://test.salesforce.com/packaging/installPackage.apexp?p0=04tgL000000GPwvQAG |
+| Production | https://login.salesforce.com/packaging/installPackage.apexp?p0=04tgL000000GUerQAG |
+| Sandbox | https://test.salesforce.com/packaging/installPackage.apexp?p0=04tgL000000GUerQAG |
 
 ```bash
-sf package install --package 04tgL000000GPwvQAG --target-org <alias>
+sf package install --package 04tgL000000GUerQAG --target-org <alias>
 ```
 
 **Deploy from source:** see [docs/INSTALL.md](docs/INSTALL.md).

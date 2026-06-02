@@ -4,8 +4,8 @@ Plugin URI: https://github.com/jason-best/lightning-flow-iframe
 Contributors: jasonbest
 Tags: Salesforce, iframe, flow
 Requires at least: 4.9
-Tested up to: 6.7
-Stable tag: 1.1.0
+Tested up to: 7.0
+Stable tag: 1.1.1
 Requires PHP: 7.4
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -28,7 +28,7 @@ Features:
 
 = How do I set up Salesforce? =
 
-Install the FlowIframeEmbed package (or deploy equivalent metadata), activate your Screen Flow, expose FlowIframeEmbed on a Salesforce Site, and grant guest access. See the repository docs and https://threelevers.com/support/products/lightning-flow-iframe/salesforce-setup/
+Install the FlowIframeEmbed package (or deploy equivalent metadata), activate your Screen Flow, expose FlowIframeEmbed on a Salesforce Site, and grant guest access. See the [GitHub repository](https://github.com/jason-best/lightning-flow-iframe) and [Salesforce setup guide](https://threelevers.com/support/products/lightning-flow-iframe/salesforce-setup/).
 
 = Can I use just [Lightning-Flow-iFrame] with no attributes? =
 
@@ -36,7 +36,11 @@ Yes, when you configure Default iFrame URL, Default Flow Name, and optionally De
 
 = Is inputvars required? =
 
-No. Omit inputvars when your flow needs no URL inputs. When set, only listed parameters (from extraqs or the parent page query string) are passed to the flow.
+No. Omit inputvars when your flow needs no URL inputs. When set, only listed parameters are passed to the flow. Matching values are read from the parent page URL query string (for example `?recordId=001xxx`), from `extraqs`, or from shortcode attributes with the same name.
+
+= How do parent page variables reach the flow? =
+
+Set `inputvars` to a comma-separated allowlist of Flow input variable API names. If the WordPress page URL includes those query parameters, the plugin adds them to the iframe URL. Example page: `https://yoursite.com/form/?recordId=001xxx&source=web` with shortcode `[Lightning-Flow-iFrame inputvars="recordId,source"]`.
 
 = How do I keep legacy behavior? =
 
@@ -52,6 +56,10 @@ Leave Default Flow Name blank and do not add a flow attribute to your shortcode.
 6. Add `[Lightning-Flow-iFrame]` to a page or post
 
 == Changelog ==
+
+= 1.1.1 =
+* Embed mode: pass parent page query params listed in inputvars to the iframe URL
+* Read parent URL params from the page request (supports custom query var names)
 
 = 1.1.0 =
 * FlowIframeEmbed embed mode (flow, endUrl, optional inputVars)

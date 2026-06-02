@@ -5,13 +5,13 @@
  * @package       IFRAMESFL
  * @author        Jason Best
  * @license       gplv2
- * @version       1.1.0
+ * @version       1.1.1
  *
  * @wordpress-plugin
  * Plugin Name:   Lightning Flow iFrame
  * Plugin URI:    https://github.com/jason-best/lightning-flow-iframe
  * Description:   Embed Salesforce Lightning Flows via shortcode. Supports FlowIframeEmbed (flow, endUrl, inputVars) with plugin defaults, plus legacy Visualforce embed mode.
- * Version:       1.1.0
+ * Version:       1.1.1
  * Author:        Jason Best
  * Author URI:    https://threelevers.com
  * Text Domain:   iframe-lightning-flow
@@ -95,6 +95,95 @@ function tlsflfi_parse_extraqs( $extraqs ) {
 }
 
 /**
+ * Read query parameters from the current WordPress page request.
+ *
+ * Uses $_GET so custom params (recordId, source, etc.) are available even when
+ * they are not registered WordPress query vars.
+ *
+ * @return array
+ */
+function tlsflfi_get_parent_query_array() {
+	$params = array();
+
+	if ( empty( $_GET ) || ! is_array( $_GET ) ) {
+		return $params;
+	}
+
+	foreach ( $_GET as $key => $value ) {
+		if ( ! is_string( $key ) || $key === '' ) {
+			continue;
+		}
+		if ( ! preg_match( '/^[a-zA-Z0-9_]+$/', $key ) ) {
+			continue;
+		}
+		if ( is_array( $value ) ) {
+			$value = reset( $value );
+		}
+		if ( $value === null || $value === '' ) {
+			continue;
+		}
+
+		$params[ $key ] = sanitize_text_field( wp_unslash( $value ) );
+	}
+
+	return $params;
+}
+
+/**
+ * Collect flow input values allowed by inputvars.
+ *
+ * Precedence (lowest to highest): extraqs, parent page query string, shortcode attrs.
+ *
+ * @param array $atts             Effective shortcode attributes.
+ * @param array $parent_query_array Parent page query parameters.
+ * @param array $raw_atts         Raw shortcode attributes from the shortcode tag.
+ * @return array
+ */
+function tlsflfi_collect_flow_params( $atts, $parent_query_array, $raw_atts = array() ) {
+	$allowed_keys = tlsflfi_normalize_input_vars( $atts['inputvars'] );
+	if ( count( $allowed_keys ) === 0 ) {
+		return array();
+	}
+
+	$flow_params = array();
+
+	foreach ( tlsflfi_parse_extraqs( $atts['extraqs'] ) as $key => $value ) {
+		if ( in_array( $key, $allowed_keys, true ) && $value !== '' && $value !== null ) {
+			$flow_params[ $key ] = sanitize_text_field( $value );
+		}
+	}
+
+	if ( is_array( $parent_query_array ) ) {
+		foreach ( $parent_query_array as $key => $value ) {
+			if ( in_array( $key, $allowed_keys, true ) && $value !== '' && $value !== null ) {
+				$flow_params[ $key ] = sanitize_text_field( $value );
+			}
+		}
+	}
+
+	if ( is_array( $raw_atts ) ) {
+		$reserved = array( 'endurl', 'iframeurl', 'embedurl', 'flow', 'inputvars', 'height', 'extraqs', 'ease', 'easespeed', 'lazy' );
+		foreach ( $raw_atts as $key => $value ) {
+			if ( in_array( $key, $reserved, true ) ) {
+				continue;
+			}
+			if ( ! in_array( $key, $allowed_keys, true ) ) {
+				continue;
+			}
+			if ( is_array( $value ) ) {
+				$value = reset( $value );
+			}
+			if ( $value === null || $value === '' ) {
+				continue;
+			}
+			$flow_params[ $key ] = sanitize_text_field( $value );
+		}
+	}
+
+	return $flow_params;
+}
+
+/**
  * Merge shortcode attributes with plugin defaults.
  *
  * @param array $atts Shortcode attributes.
@@ -168,9 +257,10 @@ function tlsflfi_build_legacy_src( $atts, $parent_query_string ) {
  *
  * @param array $atts                Effective shortcode attributes.
  * @param array $parent_query_array  Parent page query parameters.
+ * @param array $raw_atts            Raw shortcode attributes.
  * @return string|false
  */
-function tlsflfi_build_embed_src( $atts, $parent_query_array ) {
+function tlsflfi_build_embed_src( $atts, $parent_query_array, $raw_atts = array() ) {
 	if ( $atts['flow'] === '' ) {
 		return false;
 	}
@@ -192,24 +282,8 @@ function tlsflfi_build_embed_src( $atts, $parent_query_array ) {
 		$args['inputVars'] = implode( ',', $allowed_keys );
 	}
 
-	$flow_params = array();
-	if ( count( $allowed_keys ) > 0 ) {
-		foreach ( tlsflfi_parse_extraqs( $atts['extraqs'] ) as $key => $value ) {
-			if ( in_array( $key, $allowed_keys, true ) && $value !== '' && $value !== null ) {
-				$flow_params[ $key ] = $value;
-			}
-		}
-
-		if ( is_array( $parent_query_array ) ) {
-			foreach ( $parent_query_array as $key => $value ) {
-				if ( in_array( $key, $allowed_keys, true ) && $value !== '' && $value !== null ) {
-					$flow_params[ $key ] = $value;
-				}
-			}
-		}
-	}
-
-	$args = array_merge( $args, $flow_params );
+	$flow_params = tlsflfi_collect_flow_params( $atts, $parent_query_array, $raw_atts );
+	$args        = array_merge( $args, $flow_params );
 
 	return add_query_arg( $args, $atts['iframeurl'] );
 }
@@ -275,27 +349,18 @@ function tlsflfi_render_iframe( $iframe_id, $src, $atts ) {
  * @return string
  */
 function tlsflfi_iframe_prefs( $atts ) {
-	wp_enqueue_script( 'iframe-resizer', plugin_dir_url( __FILE__ ) . 'js/iframeResizer.min.js', array(), '1.1.0', true );
+	wp_enqueue_script( 'iframe-resizer', plugin_dir_url( __FILE__ ) . 'js/iframeResizer.min.js', array(), '1.1.1', true );
 
-	$atts = tlsflfi_get_effective_atts( $atts );
-
-	$url_raw              = add_query_arg( null, null );
-	$url                  = esc_url_raw( sanitize_url( $url_raw ) );
-	$parent_query_string  = parse_url( $url, PHP_URL_QUERY );
-	$parent_query_string  = is_string( $parent_query_string ) ? $parent_query_string : '';
-	$parent_query_array   = array();
-	if ( $parent_query_string !== '' ) {
-		parse_str( $parent_query_string, $parent_query_array );
-		if ( ! is_array( $parent_query_array ) ) {
-			$parent_query_array = array();
-		}
-	}
+	$raw_atts             = is_array( $atts ) ? $atts : array();
+	$atts                 = tlsflfi_get_effective_atts( $atts );
+	$parent_query_array   = tlsflfi_get_parent_query_array();
+	$parent_query_string  = http_build_query( $parent_query_array );
 
 	$iframe_id = tlsflfi_next_iframe_id();
 	$is_embed  = $atts['flow'] !== '';
 
 	if ( $is_embed ) {
-		$src = tlsflfi_build_embed_src( $atts, $parent_query_array );
+		$src = tlsflfi_build_embed_src( $atts, $parent_query_array, $raw_atts );
 		if ( $src === false ) {
 			return '<!-- Lightning Flow iFrame: missing flow or iframe URL -->';
 		}

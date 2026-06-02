@@ -2,18 +2,18 @@
 
 ## Option A — Install unlocked package (recommended)
 
-**Version:** `1.0.0-1`  
-**Subscriber package version Id:** `04tgL000000GPwvQAG`
+**Version:** `1.1.0-2` (released)  
+**Subscriber package version Id:** `04tgL000000GUerQAG`
 
 | Org type | Install URL |
 |----------|-------------|
-| Production | https://login.salesforce.com/packaging/installPackage.apexp?p0=04tgL000000GPwvQAG |
-| Sandbox | https://test.salesforce.com/packaging/installPackage.apexp?p0=04tgL000000GPwvQAG |
+| Production | https://login.salesforce.com/packaging/installPackage.apexp?p0=04tgL000000GUerQAG |
+| Sandbox | https://test.salesforce.com/packaging/installPackage.apexp?p0=04tgL000000GUerQAG |
 
 CLI:
 
 ```bash
-sf package install --package 04tgL000000GPwvQAG --target-org <alias>
+sf package install --package 04tgL000000GUerQAG --target-org <alias>
 ```
 
 ## Option B — Deploy from source

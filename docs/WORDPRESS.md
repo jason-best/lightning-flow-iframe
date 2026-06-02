@@ -61,14 +61,16 @@ Or with optional flow inputs:
 | `iframeurl` / `embedurl` | Site URL to **FlowIframeEmbed** (no query) |
 | `flow` | Flow API Developer Name |
 | `endurl` | Sent as `endUrl` on iframe URL |
-| `inputvars` | Optional comma-separated allowlist; when omitted, no flow inputs are passed |
-| `extraqs` | `key=value&...`; only keys in `inputvars` are appended |
+| `inputvars` | Optional comma-separated allowlist; when set, matching params from the parent page URL are appended to the iframe |
+| `extraqs` | `key=value&...`; only keys in `inputvars` are appended (overridden by parent URL, then shortcode attrs) |
 | `height` | Initial iframe height (e.g. `75px`) |
 | `ease` | `true` to animate height changes |
 | `easespeed` | Transition duration in seconds (default `0.2`) |
 | `lazy` | `true` for `loading="lazy"` on the iframe |
 
-Parent page query parameters are forwarded **only** when listed in `inputvars`.
+Parent page query parameters are forwarded **only** when listed in `inputvars`. Example: page URL `?recordId=001xxx&source=web` with `inputvars="recordId,source"` adds both to the iframe URL.
+
+You can also pass values on the shortcode when the name is in `inputvars`, e.g. `inputvars="recordId" recordId="001xxx"`.
 
 ### Legacy mode
 
