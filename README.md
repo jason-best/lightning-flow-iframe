@@ -101,7 +101,7 @@ More examples: [docs/EMBED.md](docs/EMBED.md) · Local demo: [examples/embed-dem
 
 ## WordPress
 
-The legacy **Lightning Flow iFrame** plugin (shortcode `[Lightning-Flow-iFrame]`) lives in [`wordpress/lightning-flow-iframe/`](wordpress/lightning-flow-iframe/). Install by zipping that folder and uploading it under **Plugins → Add New → Upload Plugin**.
+The **Lightning Flow iFrame** plugin (shortcode `[Lightning-Flow-iFrame]`) lives in [`wordpress/lightning-flow-iframe/`](wordpress/lightning-flow-iframe/). Install by zipping that folder and uploading it under **Plugins → Add New → Upload Plugin**.
 
 Full instructions: [docs/WORDPRESS.md](docs/WORDPRESS.md) (settings page, bare `[Lightning-Flow-iFrame]` shortcode, embed vs legacy modes).
 

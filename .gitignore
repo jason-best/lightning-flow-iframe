@@ -7,6 +7,9 @@ coverage/
 logs
 *.log
 node_modules/
+SYNC.md
+PUBLISH.md
+.gitignore
 .pmdCache
 .eslintcache
 .DS_Store
