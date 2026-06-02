@@ -95,9 +95,60 @@ function tlsflfi_add_settings_page() {
 add_action( 'admin_menu', 'tlsflfi_add_settings_page' );
 
 /**
+ * Documentation URL for admin links.
+ *
+ * @return string
+ */
+function tlsflfi_get_docs_url() {
+	if ( defined( 'TLSFLFI_DOCS_URL' ) ) {
+		return TLSFLFI_DOCS_URL;
+	}
+
+	return 'https://threelevers.com/support/products/lightning-flow-iframe/wordpress/';
+}
+
+/**
+ * Add Documentation link on the Plugins list row.
+ *
+ * @param array  $links Plugin row meta links.
+ * @param string $file  Plugin basename.
+ * @return array
+ */
+function tlsflfi_plugin_row_meta( $links, $file ) {
+	if ( ! defined( 'TLSFLFI_PLUGIN_FILE' ) || plugin_basename( TLSFLFI_PLUGIN_FILE ) !== $file ) {
+		return $links;
+	}
+
+	$links[] = sprintf(
+		'<a href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a>',
+		esc_url( tlsflfi_get_docs_url() ),
+		esc_html__( 'Documentation', 'iframe-lightning-flow' )
+	);
+
+	return $links;
+}
+add_filter( 'plugin_row_meta', 'tlsflfi_plugin_row_meta', 10, 2 );
+
+/**
  * Settings section intro.
  */
 function tlsflfi_render_defaults_section() {
+	echo '<p>';
+	printf(
+		wp_kses(
+			/* translators: %s: plugin documentation URL */
+			__( 'See the <a href="%s" target="_blank" rel="noopener noreferrer">plugin documentation</a> for shortcode examples, inputvars, Salesforce setup, and legacy vs embed mode.', 'iframe-lightning-flow' ),
+			array(
+				'a' => array(
+					'href'   => array(),
+					'target' => array(),
+					'rel'    => array(),
+				),
+			)
+		),
+		esc_url( tlsflfi_get_docs_url() )
+	);
+	echo '</p>';
 	echo '<p>';
 	esc_html_e(
 		'Configure defaults so pages can use the bare shortcode [Lightning-Flow-iFrame]. Shortcode attributes always override these values. inputvars is optional—omit it when your flow needs no URL inputs.',

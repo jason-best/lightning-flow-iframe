@@ -5,13 +5,13 @@
  * @package       IFRAMESFL
  * @author        Jason Best
  * @license       gplv2
- * @version       1.1.1
+ * @version       1.1.2
  *
  * @wordpress-plugin
  * Plugin Name:   Lightning Flow iFrame
  * Plugin URI:    https://github.com/jason-best/lightning-flow-iframe
  * Description:   Embed Salesforce Lightning Flows via shortcode. Supports FlowIframeEmbed (flow, endUrl, inputVars) with plugin defaults, plus legacy Visualforce embed mode.
- * Version:       1.1.1
+ * Version:       1.1.2
  * Author:        Jason Best
  * Author URI:    https://threelevers.com
  * Text Domain:   iframe-lightning-flow
@@ -29,6 +29,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 define( 'TLSFLFI_LEGACY_DEMO_URL', 'https://threelevers.com/plugins/iframe-embed' );
 define( 'TLSFLFI_RESERVED_PARAMS', 'flow,endUrl,inputVars' );
+define( 'TLSFLFI_PLUGIN_FILE', __FILE__ );
+define( 'TLSFLFI_DOCS_URL', 'https://threelevers.com/support/products/lightning-flow-iframe/wordpress/' );
 
 require_once plugin_dir_path( __FILE__ ) . 'includes/admin-settings.php';
 
@@ -349,7 +351,7 @@ function tlsflfi_render_iframe( $iframe_id, $src, $atts ) {
  * @return string
  */
 function tlsflfi_iframe_prefs( $atts ) {
-	wp_enqueue_script( 'iframe-resizer', plugin_dir_url( __FILE__ ) . 'js/iframeResizer.min.js', array(), '1.1.1', true );
+	wp_enqueue_script( 'iframe-resizer', plugin_dir_url( __FILE__ ) . 'js/iframeResizer.min.js', array(), '1.1.2', true );
 
 	$raw_atts             = is_array( $atts ) ? $atts : array();
 	$atts                 = tlsflfi_get_effective_atts( $atts );

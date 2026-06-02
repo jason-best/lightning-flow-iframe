@@ -5,7 +5,7 @@ Contributors: jasonbest
 Tags: Salesforce, iframe, flow
 Requires at least: 4.9
 Tested up to: 7.0
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 Requires PHP: 7.4
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -56,6 +56,9 @@ Leave Default Flow Name blank and do not add a flow attribute to your shortcode.
 6. Add `[Lightning-Flow-iFrame]` to a page or post
 
 == Changelog ==
+
+= 1.1.2 =
+* Documentation link on Plugins list and Settings page
 
 = 1.1.1 =
 * Embed mode: pass parent page query params listed in inputvars to the iframe URL
