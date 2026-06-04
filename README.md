@@ -199,7 +199,6 @@ sf org create scratch --definition-file config/project-scratch-def.json --alias 
 sf project deploy start --manifest manifest/package.xml --target-org flow-embed-scratch
 ```
 
-Maintainers: see [SYNC.md](SYNC.md) for syncing from the private ThreeLeversDevOrg monorepo.
 
 ---
 
