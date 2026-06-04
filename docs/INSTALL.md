@@ -35,4 +35,4 @@ For unpackaged dev without the namespace package, edit `FlowIframeEmbed.page` an
 4. **Clickjack / CSP**: allow your external parent domain to frame the Site URL.
 5. Copy the public Site URL path to **FlowIframeEmbed** — this is your `embedUrl` on the parent site.
 
-See [Salesforce setup](https://threelevers.com/support/products/lightning-flow-iframe/salesforce-setup/) for step-by-step guidance.
+Embedding Salesforce inside external iframes requires precise configuration of the Flow, Salesforce Sites, Trusted URLs, and Clickjack Protection settings. See the repository [Quick start](../README.md#quick-start), this installation guide, and [Salesforce setup documentation](https://threelevers.com/support/products/lightning-flow-iframe/salesforce-setup/) for details. If your organization has strict security policies, complex data routing, or needs assistance setting up or scaling this architecture safely, [contact Three Levers for consulting support](https://threelevers.com/contact/).

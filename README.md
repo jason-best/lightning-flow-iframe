@@ -58,6 +58,8 @@ sequenceDiagram
 4. Copy your Site URL to the page, e.g. `https://your-site.force.com/prefix/FlowIframeEmbed`.
 5. On your website, add the [embed script](#embed-on-your-website) with `embedUrl` and `flow`.
 
+Embedding Salesforce inside external iframes requires precise configuration of the Flow, Salesforce Sites, Trusted URLs, and Clickjack Protection settings. See the [Quick start](#quick-start) steps above, [Installation guide](docs/INSTALL.md), and [Salesforce setup documentation](https://threelevers.com/support/products/lightning-flow-iframe/salesforce-setup/) for details. If your organization has strict security policies, complex data routing, or needs assistance setting up or scaling this architecture safely, [contact Three Levers for consulting support](https://threelevers.com/contact/).
+
 ---
 
 ## Install package
