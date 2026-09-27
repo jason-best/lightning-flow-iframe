@@ -2,7 +2,7 @@
 
 The **Lightning Flow iFrame** WordPress plugin is included in this repository at [`wordpress/lightning-flow-iframe/`](../wordpress/lightning-flow-iframe/).
 
-It embeds Salesforce flows via shortcode with dynamic iframe height. **v1.1.0** adds **FlowIframeEmbed** support (`flow`, `endUrl`, optional `inputVars`) while preserving legacy behavior for existing sites.
+It embeds Salesforce flows via shortcode with dynamic iframe height, optional page colors and padding, and a scroll offset for sites with a fixed header. **FlowIframeEmbed** support (`flow`, `endUrl`, optional `inputVars`) preserves legacy behavior for existing sites. Current plugin version: **1.1.5**.
 
 ## Install from this repository
 
@@ -22,6 +22,12 @@ It embeds Salesforce flows via shortcode with dynamic iframe height. **v1.1.0** 
 | **Default iFrame URL** | Salesforce Site URL to **FlowIframeEmbed** (no query string). Example: `https://your-site.force.com/site-prefix/FlowIframeEmbed` |
 | **Default Flow Name** | Flow API Developer Name (e.g. `Check_In_Dispatch`). When set, shortcodes without `flow` use embed mode. **Leave blank** to keep legacy behavior. |
 | **Default End URL** | Parent redirect when the flow finishes (`endUrl` on iframe URL). Optional. |
+| **Background color** | Color of the iframe page body, such as `F5F3F0` or `white`. Optional. |
+| **Padding** | Space around the flow on that body, such as `0` or `1rem`. A bare number is pixels. Optional. |
+| **Primary color** | Next and Finish buttons, such as `C75B39`. Leave blank for rust. |
+| **Primary hover color** | Hover of those buttons. Leave blank for a darker mix of the primary color. |
+| **Secondary color** | Previous button text and border. Leave blank for dark text and a gray border. |
+| **Scroll offset** | Pixels to keep clear below a fixed header when Next scrolls the page. Example: `81`. Leave blank to align with the top of the window. |
 
 When all three defaults are configured, the minimal shortcode is:
 
@@ -53,7 +59,9 @@ Or with optional flow inputs:
   height="75px"
   ease="true"
   easespeed="0.2"
-  lazy="true"]
+  lazy="true"
+  bg="F5F3F0"
+  padding="0"]
 ```
 
 | Attribute | Description |
@@ -67,6 +75,12 @@ Or with optional flow inputs:
 | `ease` | `true` to animate height changes |
 | `easespeed` | Transition duration in seconds (default `0.2`) |
 | `lazy` | `true` for `loading="lazy"` on the iframe |
+| `bg` | Overrides the Background color setting |
+| `padding` | Overrides the Padding setting |
+| `primary` | Overrides the Primary color setting |
+| `primaryhover` | Overrides the Primary hover color setting |
+| `secondary` | Overrides the Secondary color setting |
+| `scrolloffset` | Pixels to keep clear below a fixed header when Next scrolls the page |
 
 Parent page query parameters are forwarded **only** when listed in `inputvars`. Example: page URL `?recordId=001xxx&source=web` with `inputvars="recordId,source"` adds both to the iframe URL.
 
@@ -91,6 +105,8 @@ Legacy mode appends **all** query parameters from the current WordPress page to 
 | `iframeurl` / `embedurl` | `embedUrl` |
 | `endurl` | `endUrl` |
 | `inputvars` + `extraqs` | `inputVars` + `params` |
+| `bg` / `padding` / `primary` / `primaryHover` / `secondary` | `bg` / `padding` / `primary` / `primaryHover` / `secondary` |
+| `scrolloffset` | `scrollOffset` |
 | Parent QS when in `inputvars` | Explicit `params` only |
 
 See [README migration section](../README.md#migration-from-legacy-ifc-widget) and [EMBED.md](EMBED.md).

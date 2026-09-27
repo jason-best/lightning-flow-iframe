@@ -64,15 +64,15 @@ Embedding Salesforce inside external iframes requires precise configuration of t
 
 ## Install package
 
-**Version `1.1.0-2` (released)** · Subscriber version Id `04tgL000000GUerQAG`
+**Version `1.2.0-2` (released)** · Subscriber version Id `04tgL000000W9EfQAK`
 
 | Org | URL |
 |-----|-----|
-| Production | https://login.salesforce.com/packaging/installPackage.apexp?p0=04tgL000000GUerQAG |
-| Sandbox | https://test.salesforce.com/packaging/installPackage.apexp?p0=04tgL000000GUerQAG |
+| Production | https://login.salesforce.com/packaging/installPackage.apexp?p0=04tgL000000W9EfQAK |
+| Sandbox | https://test.salesforce.com/packaging/installPackage.apexp?p0=04tgL000000W9EfQAK |
 
 ```bash
-sf package install --package 04tgL000000GUerQAG --target-org <alias>
+sf package install --package 04tgL000000W9EfQAK --target-org <alias>
 ```
 
 **Deploy from source:** see [docs/INSTALL.md](docs/INSTALL.md).
@@ -92,11 +92,14 @@ sf package install --package 04tgL000000GUerQAG --target-org <alias>
     inputVars: ['recordId', 'source'],
     params: { recordId: '001xxx', source: 'homepage' },
     height: '75px',
+    bg: 'F5F3F0',
+    padding: '0',
+    primary: 'C75B39',
     ease: true,
     allowedOrigin: 'https://your-site.force.com'
   };
 </script>
-<script src="https://cdn.jsdelivr.net/gh/jason-best/lightning-flow-iframe@1.0.0/embed/three-levers-flow-embed.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/jason-best/lightning-flow-iframe@v1.2.0/embed/three-levers-flow-embed.js"></script>
 ```
 
 More examples: [docs/EMBED.md](docs/EMBED.md) · Local demo: [examples/embed-demo.html](examples/embed-demo.html)
@@ -113,7 +116,7 @@ New WordPress sites should prefer embed mode via plugin defaults or explicit `fl
 
 | URL | Use |
 |-----|-----|
-| `https://cdn.jsdelivr.net/gh/jason-best/lightning-flow-iframe@1.0.0/embed/three-levers-flow-embed.js` | Pinned release |
+| `https://cdn.jsdelivr.net/gh/jason-best/lightning-flow-iframe@v1.2.0/embed/three-levers-flow-embed.js` | Pinned release |
 | `https://cdn.jsdelivr.net/gh/jason-best/lightning-flow-iframe@latest/embed/three-levers-flow-embed.js` | Latest GitHub release |
 
 ---
@@ -130,6 +133,12 @@ New WordPress sites should prefer embed mode via plugin defaults or explicit `fl
 | `container` | No | `#tl-flow-embed` | Mount selector or element |
 | `height` | No | `75px` | Initial iframe height |
 | `heightPadding` | No | `20` | Pixels added to `frameHeight` |
+| `bg` | No | page default | Color of the iframe page body, such as `F5F3F0` or `white` |
+| `padding` | No | page default | Space around the flow on that body, such as `0` or `1rem` |
+| `primary` | No | `#C75B39` | Color of Next and Finish buttons, such as `C75B39` |
+| `primaryHover` | No | darker primary | Hover color of those buttons. Blank uses a darker mix of `primary` |
+| `secondary` | No | page default | Text and border of Previous buttons. Blank keeps dark text and a gray border |
+| `scrollOffset` | No | `0` | Pixels to keep clear below a fixed header when Next scrolls the page. Not sent to the iframe |
 | `ease` | No | `false` | Animate height changes |
 | `easeSpeed` | No | `0.2` | Transition seconds |
 | `lazy` | No | `false` | `loading="lazy"` on iframe |
@@ -149,6 +158,11 @@ Set on the Salesforce Site URL (iframe `src`):
 | `flow` | Yes | Flow Developer Name |
 | `endUrl` | No | Parent redirect on finish |
 | `inputVars` | No | Comma-separated allowlist; if omitted, no params go to the flow |
+| `bg` | No | Iframe page body color. Set `bg` on the widget or in WordPress settings |
+| `padding` | No | Iframe page body padding. Set `padding` on the widget or in WordPress settings |
+| `primary` | No | Primary button color. Set `primary` on the widget or in WordPress settings |
+| `primaryHover` | No | Primary button hover color. Set `primaryHover` on the widget or in WordPress settings |
+| `secondary` | No | Secondary button text and border. Set `secondary` on the widget or in WordPress settings |
 | other | No | Flow inputs only when listed in `inputVars` |
 
 Example:

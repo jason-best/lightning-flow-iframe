@@ -18,3 +18,5 @@ Thumbs.db
 **/.venv/
 **/venv/
 /docs/PACKAGING.md
+CLAUDE.md
+lightning-flow-iframe.zip

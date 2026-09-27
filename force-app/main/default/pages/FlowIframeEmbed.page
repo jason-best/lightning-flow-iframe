@@ -20,15 +20,15 @@
 
 /* --- :root — design tokens (page shell + Flow chrome) --- */
 :root {
-  /* Page background behind the flow */
+  /* Page background behind the flow. The iframe URL does not change this token. */
   --fie-color-bg-page: #f3f3f3;
   /* Primary text */
   --fie-color-text: #181818;
   /* Secondary / help text */
   --fie-color-text-muted: #706e6b;
-  /* Primary actions (Next, Finish, brand buttons) */
-  --fie-color-accent: #0176d3;
-  --fie-color-accent-hover: #014486;
+  /* Primary actions (Next, Finish, brand buttons). Default is rust. */
+  --fie-color-accent: #C75B39;
+  --fie-color-accent-hover: #A84A2E;
   /* Required asterisk, inline links in help text */
   --fie-color-link: #0176d3;
   /* Validation errors on fields */
@@ -73,6 +73,12 @@ body {
 }
 body {
   padding: 1rem 1rem 1.5rem;
+}
+
+/* Let the html/body background show through the Flow runtime shell. */
+.flowruntimeFlowRuntime {
+  background: transparent !important;
+  background-color: transparent !important;
 }
 
 /* --- #flowLoading — shown until Lightning Out loads the flow --- */
@@ -205,10 +211,13 @@ body {
 }
 .slds-scope .slds-button_brand:hover,
 .slds-scope .slds-button_brand:focus,
+.slds-scope .slds-button_brand:active,
 .slds-scope .slds-button--brand:hover,
-.slds-scope .slds-button--brand:focus {
+.slds-scope .slds-button--brand:focus,
+.slds-scope .slds-button--brand:active {
   background-color: var(--fie-color-accent-hover);
   border-color: var(--fie-color-accent-hover);
+  color: #fff;
 }
 
 /* --- Secondary buttons (Previous, Pause where shown) --- */
@@ -218,9 +227,145 @@ body {
   padding: 0.5rem 1rem;
   min-height: var(--fie-input-min-height);
   border-radius: var(--fie-radius);
-  border: 1px solid var(--fie-color-border);
-  color: var(--fie-color-text);
+  border: 1px solid var(--fie-color-secondary, var(--fie-color-border));
+  color: var(--fie-color-secondary, var(--fie-color-text));
   background: #fff;
+}
+.slds-scope .slds-button_neutral:hover,
+.slds-scope .slds-button_neutral:focus,
+.slds-scope .slds-button_neutral:active,
+.slds-scope .slds-button--neutral:hover,
+.slds-scope .slds-button--neutral:focus,
+.slds-scope .slds-button--neutral:active {
+  background: #f3f3f3;
+  border-color: var(--fie-color-secondary, var(--fie-color-border));
+  color: var(--fie-color-secondary, var(--fie-color-text));
+}
+
+/* Styling hooks inherit into lightning-button shadow roots. */
+.slds-scope {
+  --slds-c-button-brand-color-background: var(--fie-color-accent);
+  --slds-c-button-brand-color-border: var(--fie-color-accent);
+  --slds-c-button-brand-text-color: #fff;
+  --slds-c-button-brand-color-background-hover: var(--fie-color-accent-hover);
+  --slds-c-button-brand-color-border-hover: var(--fie-color-accent-hover);
+  --slds-c-button-brand-text-color-hover: #fff;
+  --slds-c-button-brand-color-background-active: var(--fie-color-accent-hover);
+  --slds-c-button-brand-color-border-active: var(--fie-color-accent-hover);
+  --slds-c-button-outline-brand-color-background: #fff;
+  --slds-c-button-outline-brand-color-border: var(--fie-color-accent);
+  --slds-c-button-outline-brand-text-color: var(--fie-color-accent);
+  --slds-c-button-outline-brand-color-background-hover: var(--fie-color-accent-hover);
+  --slds-c-button-outline-brand-color-border-hover: var(--fie-color-accent-hover);
+  --slds-c-button-outline-brand-text-color-hover: #fff;
+  --slds-c-button-neutral-color-background: #fff;
+  --slds-c-button-neutral-color-border: var(--fie-color-secondary, var(--fie-color-border));
+  --slds-c-button-neutral-text-color: var(--fie-color-secondary, var(--fie-color-text));
+  --slds-c-button-neutral-color-background-hover: #f3f3f3;
+  --slds-c-button-neutral-color-border-hover: var(--fie-color-secondary, var(--fie-color-border));
+  --slds-c-button-neutral-text-color-hover: var(--fie-color-secondary, var(--fie-color-text));
+  --slds-c-button-success-color-background: var(--fie-color-accent);
+  --slds-c-button-success-color-border: var(--fie-color-accent);
+  --slds-c-button-success-text-color: #fff;
+  --slds-c-button-success-color-background-hover: var(--fie-color-accent-hover);
+  --slds-c-button-success-color-border-hover: var(--fie-color-accent-hover);
+  --slds-c-button-destructive-color-background: var(--fie-color-error);
+  --slds-c-button-destructive-color-border: var(--fie-color-error);
+  --slds-c-button-destructive-text-color: #fff;
+  --slds-c-button-text-destructive-text-color: var(--fie-color-error);
+  --slds-c-button-text-destructive-text-color-hover: var(--fie-color-error);
+  --slds-c-button-inverse-color-background-hover: var(--fie-color-accent);
+  --slds-c-button-inverse-color-border-hover: var(--fie-color-accent);
+  --slds-c-button-inverse-text-color-hover: #fff;
+}
+
+/* Outline brand */
+.slds-scope .slds-button_outline-brand,
+.slds-scope .slds-button--outline-brand {
+  background: #fff;
+  border: 1px solid var(--fie-color-accent);
+  color: var(--fie-color-accent);
+  border-radius: var(--fie-radius);
+}
+.slds-scope .slds-button_outline-brand:hover,
+.slds-scope .slds-button_outline-brand:focus,
+.slds-scope .slds-button_outline-brand:active,
+.slds-scope .slds-button--outline-brand:hover,
+.slds-scope .slds-button--outline-brand:focus,
+.slds-scope .slds-button--outline-brand:active {
+  background: var(--fie-color-accent-hover);
+  border-color: var(--fie-color-accent-hover);
+  color: #fff;
+}
+
+/* Success follows the primary token. Destructive stays on the error token. */
+.slds-scope .slds-button_success,
+.slds-scope .slds-button--success {
+  background-color: var(--fie-color-accent);
+  border: 1px solid var(--fie-color-accent);
+  color: #fff;
+  border-radius: var(--fie-radius);
+}
+.slds-scope .slds-button_success:hover,
+.slds-scope .slds-button_success:focus,
+.slds-scope .slds-button_success:active,
+.slds-scope .slds-button--success:hover,
+.slds-scope .slds-button--success:focus,
+.slds-scope .slds-button--success:active {
+  background-color: var(--fie-color-accent-hover);
+  border-color: var(--fie-color-accent-hover);
+  color: #fff;
+}
+.slds-scope .slds-button_destructive,
+.slds-scope .slds-button--destructive {
+  background-color: var(--fie-color-error);
+  border: 1px solid var(--fie-color-error);
+  color: #fff;
+  border-radius: var(--fie-radius);
+}
+.slds-scope .slds-button_text-destructive,
+.slds-scope .slds-button--text-destructive {
+  background: transparent;
+  border-color: transparent;
+  color: var(--fie-color-error);
+}
+.slds-scope .slds-button_inverse,
+.slds-scope .slds-button--inverse {
+  background: transparent;
+  border: 1px solid #fff;
+  color: #fff;
+}
+.slds-scope .slds-button_inverse:hover,
+.slds-scope .slds-button_inverse:focus,
+.slds-scope .slds-button_inverse:active,
+.slds-scope .slds-button--inverse:hover,
+.slds-scope .slds-button--inverse:focus,
+.slds-scope .slds-button--inverse:active {
+  background: var(--fie-color-accent);
+  border-color: var(--fie-color-accent);
+  color: #fff;
+}
+
+/* Base and icon buttons that are not a filled primary action */
+.slds-scope .slds-button:not([class*="slds-button_"]):not([class*="slds-button--"]) {
+  background: transparent;
+  border-color: transparent;
+  color: var(--fie-color-secondary, var(--fie-color-text));
+}
+.slds-scope .slds-button_icon,
+.slds-scope .slds-button_icon-border,
+.slds-scope .slds-button_icon-border-filled,
+.slds-scope .slds-button_icon-container,
+.slds-scope .slds-button--icon {
+  color: var(--fie-color-secondary, var(--fie-color-text));
+}
+.slds-scope .slds-button_icon-brand {
+  background: var(--fie-color-accent);
+  border-color: var(--fie-color-accent);
+  color: #fff;
+}
+.slds-scope .slds-button_icon-error {
+  color: var(--fie-color-error);
 }
 
 /* --- Text links inside flow content (not buttons) --- */
@@ -253,9 +398,75 @@ body {
             <div id="flowContainer" style="display: none;"></div>
             <script>
                 (function() {
-                    var RESERVED_PARAMS = ['flow', 'endUrl', 'inputVars'];
+                    var RESERVED_PARAMS = ['flow', 'endUrl', 'inputVars', 'bg', 'padding', 'primary', 'primaryHover', 'secondary', 'scrollOffset'];
                     /* Packaged FlowOut (namespace from FlowIframeEmbed 2GP build). Unpackaged-only dev: use c:FlowOut */
                     var flowOutApp = 'three_levers:FlowOut';
+
+                    function sanitizeColor(raw) {
+                        if (!raw) {
+                            return '';
+                        }
+                        var value = String(raw).trim();
+                        if (/^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(value)) {
+                            return value;
+                        }
+                        if (/^(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(value)) {
+                            return '#' + value;
+                        }
+                        if (/^(?:rgb|rgba|hsl|hsla)\([0-9.%\s,\/]+\)$/.test(value)) {
+                            return value;
+                        }
+                        if (/^[a-zA-Z]{1,30}$/.test(value)) {
+                            return value;
+                        }
+                        return '';
+                    }
+
+                    function sanitizePadding(raw) {
+                        if (!raw) {
+                            return '';
+                        }
+                        var value = String(raw).trim().replace(/\s+/g, ' ');
+                        var token = '(?:0|(?:\\d+(?:\\.\\d+)?)(?:px|rem|em|%))';
+                        var pattern = new RegExp('^' + token + '(?: ' + token + '){0,3}$');
+                        if (pattern.test(value)) {
+                            return value;
+                        }
+                        if (/^\d+(?:\.\d+)?$/.test(value)) {
+                            return value + 'px';
+                        }
+                        return '';
+                    }
+
+                    function applyPageChrome() {
+                        var params = new URLSearchParams(window.location.search);
+                        var root = document.documentElement;
+                        var bg = sanitizeColor(params.get('bg'));
+                        var padding = sanitizePadding(params.get('padding'));
+                        var primary = sanitizeColor(params.get('primary'));
+                        var primaryHover = sanitizeColor(params.get('primaryHover'));
+                        var secondary = sanitizeColor(params.get('secondary'));
+                        if (bg) {
+                            root.style.backgroundColor = bg;
+                            document.body.style.backgroundColor = bg;
+                        }
+                        if (padding) {
+                            document.body.style.padding = padding;
+                        }
+                        if (primary) {
+                            root.style.setProperty('--fie-color-accent', primary);
+                        }
+                        if (primaryHover) {
+                            root.style.setProperty('--fie-color-accent-hover', primaryHover);
+                        } else if (primary) {
+                            root.style.setProperty('--fie-color-accent-hover', 'color-mix(in srgb, ' + primary + ' 82%, black)');
+                        }
+                        if (secondary) {
+                            root.style.setProperty('--fie-color-secondary', secondary);
+                        }
+                    }
+
+                    applyPageChrome();
 
                     function getUrlParams() {
                         var params = new URLSearchParams(window.location.search);
@@ -280,6 +491,23 @@ body {
                             window.parent.postMessage({ frameHeight: height }, '*');
                         }
                     }
+
+                    function isPrimaryFlowButton(node) {
+                        return node && node.nodeType === 1 && node.matches &&
+                            node.matches('.slds-button_brand, .slds-button--brand');
+                    }
+
+                    document.addEventListener('click', function (event) {
+                        var path = event.composedPath ? event.composedPath() : [event.target];
+                        for (var i = 0; i < path.length; i++) {
+                            if (isPrimaryFlowButton(path[i])) {
+                                if (window.parent && window.parent !== window) {
+                                    window.parent.postMessage({ frameScroll: 'top' }, '*');
+                                }
+                                return;
+                            }
+                        }
+                    }, true);
 
                     var urlParams = getUrlParams();
                     var flowName = urlParams.flowName;

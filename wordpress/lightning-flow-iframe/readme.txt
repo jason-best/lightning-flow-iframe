@@ -5,7 +5,7 @@ Contributors: jasonbest
 Tags: Salesforce, iframe, flow
 Requires at least: 4.9
 Tested up to: 7.0
-Stable tag: 1.1.2
+Stable tag: 1.1.5
 Requires PHP: 7.4
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -56,6 +56,16 @@ Leave Default Flow Name blank and do not add a flow attribute to your shortcode.
 6. Add `[Lightning-Flow-iFrame]` to a page or post
 
 == Changelog ==
+
+= 1.1.5 =
+* Scroll offset so a fixed header does not cover the iframe when Next or Finish is clicked
+
+= 1.1.4 =
+* Scroll the parent page to the top of the iframe when Next or Finish is clicked
+
+= 1.1.3 =
+* Settings for iframe page background color, padding, primary button color, primary hover color, and secondary button color
+* Shortcode attributes bg, padding, primary, primaryhover, and secondary override those settings
 
 = 1.1.2 =
 * Documentation link on Plugins list and Settings page

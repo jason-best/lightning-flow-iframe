@@ -15,7 +15,7 @@
  * Contact:
  *   https://threelevers.com/contact/
  *
- * @version 1.0.0
+ * @version 1.2.0
  * @copyright Three Levers
  */
 (function () {
@@ -23,11 +23,11 @@
 
   var IFRAME_ID = 'tl-flow-iframe';
   var DEFAULT_CONTAINER = '#tl-flow-embed';
-  var RESERVED_PARAMS = ['flow', 'endUrl', 'inputVars'];
+  var RESERVED_PARAMS = ['flow', 'endUrl', 'inputVars', 'bg', 'padding', 'primary', 'primaryHover', 'secondary', 'scrollOffset'];
 
   var INFO = {
     name: 'Three Levers Flow Embed',
-    version: '1.0.0',
+    version: '1.2.0',
     documentation:
       'https://threelevers.com/support/products/lightning-flow-iframe/javascript/',
     productIndex: 'https://threelevers.com/support/products/lightning-flow-iframe/',
@@ -96,6 +96,57 @@
     return [];
   }
 
+  function sanitizeColor(raw) {
+    if (raw == null || raw === '') {
+      return '';
+    }
+    var value = String(raw).trim();
+    if (/^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(value)) {
+      return value;
+    }
+    if (/^(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(value)) {
+      return '#' + value;
+    }
+    if (/^(?:rgb|rgba|hsl|hsla)\([0-9.%\s,\/]+\)$/.test(value)) {
+      return value;
+    }
+    if (/^[a-zA-Z]{1,30}$/.test(value)) {
+      return value;
+    }
+    return '';
+  }
+
+  function sanitizePadding(raw) {
+    if (raw == null || raw === '') {
+      return '';
+    }
+    var value = String(raw).trim().replace(/\s+/g, ' ');
+    var token = '(?:0|(?:\\d+(?:\\.\\d+)?)(?:px|rem|em|%))';
+    var pattern = new RegExp('^' + token + '(?: ' + token + '){0,3}$');
+    if (pattern.test(value)) {
+      return value;
+    }
+    if (/^\d+(?:\.\d+)?$/.test(value)) {
+      return value + 'px';
+    }
+    return '';
+  }
+
+  function sanitizeScrollOffset(raw) {
+    if (raw == null || raw === '') {
+      return 0;
+    }
+    var value = String(raw).trim().replace(/px$/i, '');
+    if (!/^\d+(?:\.\d+)?$/.test(value)) {
+      return 0;
+    }
+    var offset = parseFloat(value);
+    if (isNaN(offset) || offset < 0 || offset > 1000) {
+      return 0;
+    }
+    return offset;
+  }
+
   function buildIframeSrc(config) {
     var base = String(config.embedUrl || '').trim();
     if (!base) {
@@ -122,6 +173,23 @@
     if (allowedKeys.length > 0) {
       params.set('inputVars', allowedKeys.join(','));
     }
+
+    var bg = sanitizeColor(config.bg);
+    if (bg) {
+      params.set('bg', bg);
+    }
+
+    var padding = sanitizePadding(config.padding);
+    if (padding) {
+      params.set('padding', padding);
+    }
+
+    ['primary', 'primaryHover', 'secondary'].forEach(function (key) {
+      var color = sanitizeColor(config[key]);
+      if (color) {
+        params.set(key, color);
+      }
+    });
 
     var flowParams = config.params && typeof config.params === 'object' ? config.params : {};
     Object.keys(flowParams).forEach(function (key) {
@@ -153,6 +221,10 @@
         speed = 0.2;
       }
       style += 'transition:height ' + speed + 's ease;';
+    }
+    var scrollOffset = sanitizeScrollOffset(config.scrollOffset);
+    if (scrollOffset > 0) {
+      style += 'scroll-margin-top:' + scrollOffset + 'px;';
     }
     return style;
   }
@@ -193,9 +265,10 @@
     }
 
     var allowedOrigin = config.allowedOrigin != null ? String(config.allowedOrigin).trim() : '';
+    var scrollOffset = sanitizeScrollOffset(config.scrollOffset);
 
     window.addEventListener('message', function (event) {
-      if (!event.data || typeof event.data.frameHeight !== 'number') {
+      if (!event.data) {
         return;
       }
       if (allowedOrigin && event.origin !== allowedOrigin) {
@@ -204,7 +277,15 @@
       if (event.source !== iframe.contentWindow) {
         return;
       }
-      iframe.style.height = event.data.frameHeight + padding + 'px';
+      if (event.data.frameScroll === 'top' && iframe.scrollIntoView) {
+        if (scrollOffset > 0) {
+          iframe.style.scrollMarginTop = scrollOffset + 'px';
+        }
+        iframe.scrollIntoView({ block: 'start', behavior: 'smooth' });
+      }
+      if (typeof event.data.frameHeight === 'number') {
+        iframe.style.height = event.data.frameHeight + padding + 'px';
+      }
     });
   }
 

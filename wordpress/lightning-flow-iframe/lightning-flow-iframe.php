@@ -5,13 +5,13 @@
  * @package       IFRAMESFL
  * @author        Jason Best
  * @license       gplv2
- * @version       1.1.2
+ * @version       1.1.5
  *
  * @wordpress-plugin
  * Plugin Name:   Lightning Flow iFrame
  * Plugin URI:    https://github.com/jason-best/lightning-flow-iframe
- * Description:   Embed Salesforce Lightning Flows via shortcode. Supports FlowIframeEmbed (flow, endUrl, inputVars) with plugin defaults, plus legacy Visualforce embed mode.
- * Version:       1.1.2
+ * Description:   Embed Salesforce Lightning Flows via shortcode. Supports FlowIframeEmbed (flow, endUrl, inputVars, page background and padding) with plugin defaults, plus legacy Visualforce embed mode.
+ * Version:       1.1.5
  * Author:        Jason Best
  * Author URI:    https://threelevers.com
  * Text Domain:   iframe-lightning-flow
@@ -28,7 +28,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 define( 'TLSFLFI_LEGACY_DEMO_URL', 'https://threelevers.com/plugins/iframe-embed' );
-define( 'TLSFLFI_RESERVED_PARAMS', 'flow,endUrl,inputVars' );
+define( 'TLSFLFI_RESERVED_PARAMS', 'flow,endUrl,inputVars,bg,padding,primary,primaryHover,secondary,scrollOffset' );
 define( 'TLSFLFI_PLUGIN_FILE', __FILE__ );
 define( 'TLSFLFI_DOCS_URL', 'https://threelevers.com/support/products/lightning-flow-iframe/wordpress/' );
 
@@ -43,6 +43,74 @@ require_once plugin_dir_path( __FILE__ ) . 'includes/admin-settings.php';
 function tlsflfi_sanitize_flow_name( $value ) {
 	$value = sanitize_text_field( $value );
 	return preg_replace( '/[^a-zA-Z0-9_]/', '', $value );
+}
+
+/**
+ * Sanitize a page background color for the iframe body.
+ *
+ * @param string $value Raw value.
+ * @return string
+ */
+function tlsflfi_sanitize_bg( $value ) {
+	$value = trim( sanitize_text_field( $value ) );
+	if ( $value === '' ) {
+		return '';
+	}
+	if ( preg_match( '/^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/', $value ) ) {
+		return $value;
+	}
+	if ( preg_match( '/^(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/', $value ) ) {
+		return '#' . $value;
+	}
+	if ( preg_match( '/^(?:rgb|rgba|hsl|hsla)\([0-9.%\s,\/]+\)$/', $value ) ) {
+		return $value;
+	}
+	if ( preg_match( '/^[a-zA-Z]{1,30}$/', $value ) ) {
+		return $value;
+	}
+	return '';
+}
+
+/**
+ * Sanitize iframe body padding. A bare number becomes pixels.
+ *
+ * @param string $value Raw value.
+ * @return string
+ */
+function tlsflfi_sanitize_padding( $value ) {
+	$value = trim( sanitize_text_field( (string) $value ) );
+	$value = preg_replace( '/\s+/', ' ', $value );
+	if ( $value === '' ) {
+		return '';
+	}
+	if ( preg_match( '/^(?:0|(?:\d+(?:\.\d+)?)(?:px|rem|em|%))(?: (?:0|(?:\d+(?:\.\d+)?)(?:px|rem|em|%))){0,3}$/', $value ) ) {
+		return $value;
+	}
+	if ( preg_match( '/^\d+(?:\.\d+)?$/', $value ) ) {
+		return $value . 'px';
+	}
+	return '';
+}
+
+/**
+ * Parent scroll offset in pixels. Not sent to the iframe.
+ *
+ * @param string $value Raw setting or shortcode value.
+ * @return string
+ */
+function tlsflfi_sanitize_scroll_offset( $value ) {
+	$value = trim( sanitize_text_field( (string) $value ) );
+	$value = preg_replace( '/px$/i', '', $value );
+	if ( $value === '' ) {
+		return '';
+	}
+	if ( preg_match( '/^\d+(?:\.\d+)?$/', $value ) ) {
+		$offset = (float) $value;
+		if ( $offset >= 0 && $offset <= 1000 ) {
+			return (string) $offset;
+		}
+	}
+	return '';
 }
 
 /**
@@ -150,6 +218,9 @@ function tlsflfi_collect_flow_params( $atts, $parent_query_array, $raw_atts = ar
 	$flow_params = array();
 
 	foreach ( tlsflfi_parse_extraqs( $atts['extraqs'] ) as $key => $value ) {
+		if ( tlsflfi_is_shell_param( $key ) ) {
+			continue;
+		}
 		if ( in_array( $key, $allowed_keys, true ) && $value !== '' && $value !== null ) {
 			$flow_params[ $key ] = sanitize_text_field( $value );
 		}
@@ -157,6 +228,9 @@ function tlsflfi_collect_flow_params( $atts, $parent_query_array, $raw_atts = ar
 
 	if ( is_array( $parent_query_array ) ) {
 		foreach ( $parent_query_array as $key => $value ) {
+			if ( tlsflfi_is_shell_param( $key ) ) {
+				continue;
+			}
 			if ( in_array( $key, $allowed_keys, true ) && $value !== '' && $value !== null ) {
 				$flow_params[ $key ] = sanitize_text_field( $value );
 			}
@@ -164,7 +238,7 @@ function tlsflfi_collect_flow_params( $atts, $parent_query_array, $raw_atts = ar
 	}
 
 	if ( is_array( $raw_atts ) ) {
-		$reserved = array( 'endurl', 'iframeurl', 'embedurl', 'flow', 'inputvars', 'height', 'extraqs', 'ease', 'easespeed', 'lazy' );
+		$reserved = array( 'endurl', 'iframeurl', 'embedurl', 'flow', 'inputvars', 'height', 'extraqs', 'ease', 'easespeed', 'lazy', 'bg', 'padding', 'primary', 'primaryhover', 'secondary', 'scrolloffset' );
 		foreach ( $raw_atts as $key => $value ) {
 			if ( in_array( $key, $reserved, true ) ) {
 				continue;
@@ -186,6 +260,16 @@ function tlsflfi_collect_flow_params( $atts, $parent_query_array, $raw_atts = ar
 }
 
 /**
+ * Background and padding are page-shell settings, not flow inputs.
+ *
+ * @param string $key Parameter name.
+ * @return bool
+ */
+function tlsflfi_is_shell_param( $key ) {
+	return in_array( strtolower( (string) $key ), array( 'bg', 'padding', 'primary', 'primaryhover', 'secondary', 'scrolloffset' ), true );
+}
+
+/**
  * Merge shortcode attributes with plugin defaults.
  *
  * @param array $atts Shortcode attributes.
@@ -203,14 +287,26 @@ function tlsflfi_get_effective_atts( $atts ) {
 		'ease'      => 'false',
 		'easespeed' => '0.2',
 		'lazy'      => 'true',
+		'bg'           => '',
+		'padding'      => '',
+		'primary'      => '',
+		'primaryhover' => '',
+		'secondary'    => '',
+		'scrolloffset' => '',
 	);
 
 	$atts = shortcode_atts( $defaults, $atts, 'Lightning-Flow-iFrame' );
 
 	$iframe_from_shortcode = trim( $atts['embedurl'] ) !== '' ? trim( $atts['embedurl'] ) : trim( $atts['iframeurl'] );
-	$default_iframe        = get_option( TLSFLFI_OPTION_IFRAME_URL, '' );
-	$default_flow          = get_option( TLSFLFI_OPTION_FLOW_NAME, '' );
-	$default_end           = get_option( TLSFLFI_OPTION_END_URL, '' );
+	$default_iframe = get_option( TLSFLFI_OPTION_IFRAME_URL, '' );
+	$default_flow   = get_option( TLSFLFI_OPTION_FLOW_NAME, '' );
+	$default_end    = get_option( TLSFLFI_OPTION_END_URL, '' );
+	$default_bg     = get_option( TLSFLFI_OPTION_BG, '' );
+	$default_pad    = get_option( TLSFLFI_OPTION_PADDING, '' );
+	$default_primary = get_option( TLSFLFI_OPTION_PRIMARY, '' );
+	$default_hover   = get_option( TLSFLFI_OPTION_PRIMARY_HOVER, '' );
+	$default_secondary = get_option( TLSFLFI_OPTION_SECONDARY, '' );
+	$default_scroll    = get_option( TLSFLFI_OPTION_SCROLL_OFFSET, '' );
 
 	$effective_iframe = $iframe_from_shortcode !== '' ? $iframe_from_shortcode : $default_iframe;
 	if ( $effective_iframe === '' ) {
@@ -229,6 +325,20 @@ function tlsflfi_get_effective_atts( $atts ) {
 	$atts['ease']      = sanitize_text_field( $atts['ease'] );
 	$atts['easespeed'] = sanitize_text_field( $atts['easespeed'] );
 	$atts['lazy']      = sanitize_text_field( $atts['lazy'] );
+
+	$bg_source      = trim( (string) $atts['bg'] ) !== '' ? $atts['bg'] : $default_bg;
+	$padding_source = trim( (string) $atts['padding'] ) !== '' ? $atts['padding'] : $default_pad;
+	$atts['bg']     = tlsflfi_sanitize_bg( $bg_source );
+	$atts['padding'] = tlsflfi_sanitize_padding( $padding_source );
+
+	$primary_source = trim( (string) $atts['primary'] ) !== '' ? $atts['primary'] : $default_primary;
+	$hover_source   = trim( (string) $atts['primaryhover'] ) !== '' ? $atts['primaryhover'] : $default_hover;
+	$secondary_source = trim( (string) $atts['secondary'] ) !== '' ? $atts['secondary'] : $default_secondary;
+	$atts['primary']      = tlsflfi_sanitize_bg( $primary_source );
+	$atts['primaryhover'] = tlsflfi_sanitize_bg( $hover_source );
+	$atts['secondary']    = tlsflfi_sanitize_bg( $secondary_source );
+	$scroll_source        = trim( (string) $atts['scrolloffset'] ) !== '' ? $atts['scrolloffset'] : $default_scroll;
+	$atts['scrolloffset'] = tlsflfi_sanitize_scroll_offset( $scroll_source );
 
 	return $atts;
 }
@@ -287,6 +397,22 @@ function tlsflfi_build_embed_src( $atts, $parent_query_array, $raw_atts = array(
 	$flow_params = tlsflfi_collect_flow_params( $atts, $parent_query_array, $raw_atts );
 	$args        = array_merge( $args, $flow_params );
 
+	if ( $atts['bg'] !== '' ) {
+		$args['bg'] = $atts['bg'];
+	}
+	if ( $atts['padding'] !== '' ) {
+		$args['padding'] = $atts['padding'];
+	}
+	if ( $atts['primary'] !== '' ) {
+		$args['primary'] = $atts['primary'];
+	}
+	if ( $atts['primaryhover'] !== '' ) {
+		$args['primaryHover'] = $atts['primaryhover'];
+	}
+	if ( $atts['secondary'] !== '' ) {
+		$args['secondary'] = $atts['secondary'];
+	}
+
 	return add_query_arg( $args, $atts['iframeurl'] );
 }
 
@@ -315,25 +441,40 @@ function tlsflfi_render_iframe( $iframe_id, $src, $atts ) {
 	}
 
 	$lazy_attr = ( $lazy === 'true' ) ? ' loading="lazy"' : '';
+	$scroll_offset = isset( $atts['scrolloffset'] ) ? (float) $atts['scrolloffset'] : 0;
+	$iframe_style  = 'height:' . $height . ';';
+	if ( $scroll_offset > 0 ) {
+		$iframe_style .= 'scroll-margin-top:' . $scroll_offset . 'px;';
+	}
 
 	printf(
-		'<iframe id="%1$s"%2$s src="%3$s" width="100%%" scrolling="no" style="height:%4$s;" frameborder="0" title="%5$s"></iframe>',
+		'<iframe id="%1$s"%2$s src="%3$s" width="100%%" scrolling="no" style="%4$s" frameborder="0" title="%5$s"></iframe>',
 		esc_attr( $iframe_id ),
 		$lazy_attr,
 		esc_url( $src ),
-		esc_attr( $height ),
+		esc_attr( $iframe_style ),
 		esc_attr__( 'Salesforce Flow', 'iframe-lightning-flow' )
 	);
 	?>
 <script>
 (function () {
   var iframeId = <?php echo wp_json_encode( $iframe_id ); ?>;
+  var scrollOffset = <?php echo wp_json_encode( $scroll_offset ); ?>;
   window.addEventListener('message', function (e) {
-    if (!e.data || typeof e.data.frameHeight !== 'number') {
+    if (!e.data) {
       return;
     }
     var iframe = document.getElementById(iframeId);
-    if (iframe) {
+    if (!iframe || e.source !== iframe.contentWindow) {
+      return;
+    }
+    if (e.data.frameScroll === 'top' && iframe.scrollIntoView) {
+      if (scrollOffset > 0) {
+        iframe.style.scrollMarginTop = scrollOffset + 'px';
+      }
+      iframe.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    }
+    if (typeof e.data.frameHeight === 'number') {
       iframe.style.height = (e.data.frameHeight + 20) + 'px';
     }
   });
@@ -351,7 +492,7 @@ function tlsflfi_render_iframe( $iframe_id, $src, $atts ) {
  * @return string
  */
 function tlsflfi_iframe_prefs( $atts ) {
-	wp_enqueue_script( 'iframe-resizer', plugin_dir_url( __FILE__ ) . 'js/iframeResizer.min.js', array(), '1.1.2', true );
+	wp_enqueue_script( 'iframe-resizer', plugin_dir_url( __FILE__ ) . 'js/iframeResizer.min.js', array(), '1.1.5', true );
 
 	$raw_atts             = is_array( $atts ) ? $atts : array();
 	$atts                 = tlsflfi_get_effective_atts( $atts );
