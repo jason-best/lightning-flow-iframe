@@ -492,15 +492,16 @@ body {
                         }
                     }
 
-                    function isPrimaryFlowButton(node) {
-                        return node && node.nodeType === 1 && node.matches &&
-                            node.matches('.slds-button_brand, .slds-button--brand');
+                    function isFlowStepButton(node) {
+                        return node && node.nodeType === 1 && node.classList &&
+                            (node.classList.contains('flow-button__NEXT') ||
+                                node.classList.contains('flow-button__BACK'));
                     }
 
                     document.addEventListener('click', function (event) {
                         var path = event.composedPath ? event.composedPath() : [event.target];
                         for (var i = 0; i < path.length; i++) {
-                            if (isPrimaryFlowButton(path[i])) {
+                            if (isFlowStepButton(path[i])) {
                                 if (window.parent && window.parent !== window) {
                                     window.parent.postMessage({ frameScroll: 'top' }, '*');
                                 }
@@ -521,16 +522,35 @@ body {
                         return;
                     }
 
+                    function releaseFinishedLayout() {
+                        var nodes = document.querySelectorAll('.flowruntimeModalManager');
+                        for (var i = 0; i < nodes.length; i++) {
+                            nodes[i].style.position = 'static';
+                            nodes[i].style.top = 'auto';
+                            nodes[i].style.bottom = 'auto';
+                            nodes[i].style.height = 'auto';
+                        }
+                        sendHeightToParent();
+                    }
+
                     var heightInterval;
                     var statusChange = function(event) {
-                        if (event.getParam('status') === 'FINISHED') {
+                        if (event.getParam('status') !== 'FINISHED') {
+                            return;
+                        }
+                        if (endUrl && endUrl.length > 1) {
                             if (heightInterval) {
                                 clearInterval(heightInterval);
                             }
-                            if (endUrl && endUrl.length > 1) {
-                                window.parent.location.href = endUrl;
-                            }
+                            window.parent.location.href = endUrl;
+                            return;
                         }
+                        /* No redirect. The runtime redraws after FINISHED and pins a modal
+                           manager to the iframe viewport. Keep measuring so the frame can
+                           grow or shrink with that redraw instead of clipping the screen. */
+                        releaseFinishedLayout();
+                        setTimeout(releaseFinishedLayout, 50);
+                        setTimeout(releaseFinishedLayout, 300);
                     };
                     $Lightning.use(flowOutApp, function() {
                         $Lightning.createComponent(

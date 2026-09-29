@@ -54,7 +54,7 @@ Add a `message` listener for `{ frameHeight: number }` or use the widget script.
 | Parameter | Required | Description |
 |-----------|----------|-------------|
 | `flow` | Yes | Flow Developer Name |
-| `endUrl` | No | Parent redirect on `FINISHED` |
+| `endUrl` | No | Parent redirect on `FINISHED`. When omitted, the iframe keeps resizing after finish. |
 | `inputVars` | No | Comma-separated allowlist of param names passed as String flow inputs |
 | `bg` | No | Iframe page body color, from the widget `bg` setting |
 | `padding` | No | Iframe page body padding, from the widget `padding` setting |

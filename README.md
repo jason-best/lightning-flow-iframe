@@ -16,7 +16,7 @@ Embed **Salesforce Lightning Screen Flows** on external websites (WordPress, mar
 - Run any Screen Flow via query param `flow` (Developer Name)
 - **Dynamic height** — Visualforce page posts `frameHeight` to the parent every 500ms
 - **Flow inputs** — only URL params listed in `inputVars` are passed (String)
-- **Finish redirect** — `endUrl` navigates the parent window when status is `FINISHED`
+- **Finish redirect** — `endUrl` navigates the parent window when status is `FINISHED`. With no `endUrl`, the iframe keeps resizing after finish.
 - **Unlocked 2GP package** — customize the Visualforce page and `--fie-*` CSS variables after install
 - **Parent widget** — [`embed/three-levers-flow-embed.js`](embed/three-levers-flow-embed.js) builds the iframe URL and handles resize
 
@@ -39,7 +39,11 @@ sequenceDiagram
     Widget->>Parent: resize iframe
   end
   Flow-->>VF: FINISHED
-  VF->>Parent: parent.location = endUrl
+  alt endUrl set
+    VF->>Parent: parent.location = endUrl
+  else no endUrl
+    VF->>Parent: postMessage frameHeight
+  end
 ```
 
 | Component | Description |
@@ -64,15 +68,15 @@ Embedding Salesforce inside external iframes requires precise configuration of t
 
 ## Install package
 
-**Version `1.2.0-2` (released)** · Subscriber version Id `04tgL000000W9EfQAK`
+**Version `1.2.2-2` (released)** · Subscriber version Id `04tgL000000WWrBQAW`
 
 | Org | URL |
 |-----|-----|
-| Production | https://login.salesforce.com/packaging/installPackage.apexp?p0=04tgL000000W9EfQAK |
-| Sandbox | https://test.salesforce.com/packaging/installPackage.apexp?p0=04tgL000000W9EfQAK |
+| Production | https://login.salesforce.com/packaging/installPackage.apexp?p0=04tgL000000WWrBQAW |
+| Sandbox | https://test.salesforce.com/packaging/installPackage.apexp?p0=04tgL000000WWrBQAW |
 
 ```bash
-sf package install --package 04tgL000000W9EfQAK --target-org <alias>
+sf package install --package 04tgL000000WWrBQAW --target-org <alias>
 ```
 
 **Deploy from source:** see [docs/INSTALL.md](docs/INSTALL.md).
@@ -127,7 +131,7 @@ New WordPress sites should prefer embed mode via plugin defaults or explicit `fl
 |----------|----------|---------|-------------|
 | `embedUrl` | Yes | — | Site URL to **FlowIframeEmbed** (no query) |
 | `flow` | Yes | — | Flow Developer Name |
-| `endUrl` | No | — | Parent redirect when flow finishes |
+| `endUrl` | No | — | Parent redirect when flow finishes. When omitted, the iframe keeps resizing after finish. |
 | `inputVars` | No | — | Array or comma-separated allowlist for flow inputs |
 | `params` | No | `{}` | Flow input values (keys must be in `inputVars`) |
 | `container` | No | `#tl-flow-embed` | Mount selector or element |
@@ -156,7 +160,7 @@ Set on the Salesforce Site URL (iframe `src`):
 | Parameter | Required | Description |
 |-----------|----------|-------------|
 | `flow` | Yes | Flow Developer Name |
-| `endUrl` | No | Parent redirect on finish |
+| `endUrl` | No | Parent redirect on finish. When omitted, the iframe keeps resizing after finish. |
 | `inputVars` | No | Comma-separated allowlist; if omitted, no params go to the flow |
 | `bg` | No | Iframe page body color. Set `bg` on the widget or in WordPress settings |
 | `padding` | No | Iframe page body padding. Set `padding` on the widget or in WordPress settings |
