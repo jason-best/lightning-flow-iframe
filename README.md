@@ -206,18 +206,6 @@ examples/embed-demo.html            Local test page
 
 ---
 
-## Development
-
-```bash
-git clone https://github.com/jason-best/lightning-flow-iframe.git
-cd lightning-flow-iframe
-sf org create scratch --definition-file config/project-scratch-def.json --alias flow-embed-scratch --duration-days 7
-sf project deploy start --manifest manifest/package.xml --target-org flow-embed-scratch
-```
-
-
----
-
 ## Documentation and support
 
 - [Product overview](https://threelevers.com/support/products/lightning-flow-iframe/)
